@@ -26,8 +26,7 @@ class Trainer(abc.ABC):
         self, model: nn.Module, device: Optional[torch.device] = None,
     ):
         """
-        Initialize the trainer.
-        :param model: Instance of the model to train.
+        Initialize the trainer.l model to train.
         :param device: torch.device to run training on (CPU or GPU).
         """
         self.model = model
@@ -82,26 +81,28 @@ class Trainer(abc.ABC):
             #  - Use the train/test_epoch methods.
             #  - Save losses and accuracies in the lists above.
             # ====== YOUR CODE: ======
-            raise NotImplementedError()
+            train_result: EpochResult = self.train_epoch(dl_train, **kw)
+            train_loss.append(sum(train_result.losses) / len(train_result.losses))
+            train_acc.append(train_result.accuracy)
+            test_result: EpochResult = self.test_epoch(dl_test, **kw)
+            test_loss.append(sum(test_result.losses) / len(test_result.losses))
+            test_acc.append(test_result.accuracy)
             # ========================
-
-            # TODO:
-            #  - Optional: Implement early stopping. This is a very useful and
-            #    simple regularization technique that is highly recommended.
-            #  - Optional: Implement checkpoints. You can use the save_checkpoint
-            #    method on this class to save the model to the file specified by
-            #    the checkpoints argument.
             if best_acc is None or test_result.accuracy > best_acc:
                 # ====== YOUR CODE: ======
-                raise NotImplementedError()
+                best_acc = test_result.accuracy
+                epochs_without_improvement = 0
                 # ========================
             else:
                 # ====== YOUR CODE: ======
-                raise NotImplementedError()
+                epochs_without_improvement += 1
                 # ========================
 
             if post_epoch_fn:
                 post_epoch_fn(epoch, train_result, test_result, verbose)
+
+            if early_stopping is not None and epochs_without_improvement > early_stopping:
+                break
 
         return FitResult(actual_num_epochs, train_loss, train_acc, test_loss, test_acc)
 
@@ -223,20 +224,36 @@ class Trainer(abc.ABC):
 class LayerTrainer(Trainer):
     def __init__(self, model, loss_fn, optimizer):
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        loss_fn: nn.Module
+        optimizer: Optimizer
+
+        super().__init__(model=model)
+        self.loss_fn = loss_fn
+        self.optimizer = optimizer
         # ========================
 
     def train_batch(self, batch) -> BatchResult:
         X, y = batch
 
-        # TODO: Train the Layer model on one batch of data.
-        #  - Forward pass
-        #  - Backward pass
-        #  - Optimize params
-        #  - Calculate number of correct predictions (make sure it's an int,
-        #    not a tensor) as num_correct.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        # forward
+        X = X.reshape(X.shape[0], -1)
+        y_pred: torch.Tensor = self.model.forward(X)
+        y_hat: torch.Tensor = torch.argmax(y_pred, dim=1)
+
+        # loss
+        loss = self.loss_fn(y_pred, y)
+
+        # correct
+        num_correct = (y == y_hat).sum().item()
+
+        # backward pass
+        self.optimizer.zero_grad()
+        self.model.backward(self.loss_fn.backward())
+
+        # optimizer step
+        self.optimizer.step()
+
         # ========================
 
         return BatchResult(loss, num_correct)
@@ -246,7 +263,12 @@ class LayerTrainer(Trainer):
 
         # TODO: Evaluate the Layer model on one batch of data.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        y_pred = self.model.forward(X.reshape(X.shape[0], -1))
+        y_hat = torch.argmax(y_pred, dim=1)
+
+        loss = self.loss_fn(y_pred, y).item()
+
+        num_correct = (y == y_hat).sum().item()
         # ========================
 
         return BatchResult(loss, num_correct)

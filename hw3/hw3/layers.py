@@ -313,9 +313,11 @@ class CrossEntropyLoss(Layer):
         # TODO: Compute the cross entropy loss using the last formula from the
         #  notebook (i.e. directly using the class scores).
         # ====== YOUR CODE: ======
-        total_batch_loss = -1 * x[range(N), y] + torch.log(torch.sum(torch.exp(x), dim=1))
-        average_loss = torch.mean(total_batch_loss)
-        loss = average_loss
+        # total_batch_loss = -1 * x[range(N), y] + torch.log(torch.sum(torch.exp(x), dim=1))
+        # average_loss = torch.mean(total_batch_loss)
+        # loss = average_loss
+        loss = torch.mean(-x[range(N), y] + torch.log(torch.sum(torch.exp(x),
+                                                                dim=1)))
         # ========================
 
         self.grad_cache["x"] = x
@@ -489,10 +491,10 @@ class MLP(Layer):
             activation_func = ReLU
 
         for out_dim in hidden_features:
-            layers.append(Linear(in_features=in_dim, out_features=out_dim))
+            layers.append(Linear(in_features=in_dim, out_features=out_dim, **kw))
             layers.append(activation_func())
             in_dim = out_dim
-        layers.append(Linear(in_features=in_dim, out_features=num_classes))
+        layers.append(Linear(in_features=in_dim, out_features=num_classes, **kw))
 
         # ========================
 
