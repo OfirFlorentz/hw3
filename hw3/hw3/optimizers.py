@@ -1,4 +1,6 @@
 import abc
+import math
+
 import torch
 from torch import Tensor
 
@@ -127,11 +129,11 @@ class RMSProp(Optimizer):
 
         # TODO: Add your own initializations as needed.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        self.r_vector = [0] * len(params)
         # ========================
 
     def step(self):
-        for p, dp in self.params:
+        for i, (p, dp) in enumerate(self.params):
             if dp is None:
                 continue
 
@@ -140,5 +142,10 @@ class RMSProp(Optimizer):
             # average of it's previous gradients. Use it to update the
             # parameters tensor.
             # ====== YOUR CODE: ======
-            raise NotImplementedError()
+            self.r_vector[i] = self.decay * self.r_vector[i] + (1 - self.decay) * (torch.square(dp))
+            down = torch.sqrt(self.r_vector[i] + self.eps)
+            up = self.learn_rate
+            term = up/down
+            p -= term * dp
+            dp += self.reg * p
             # ========================
