@@ -176,6 +176,9 @@ def part3_generation_params():
 part3_q1 = r"""
 **Your answer:**
 
+Splitting the corpus into sequences improves the training time significantly, training on the whole data set will
+    take too long to train. Moreover training on the whole set can result in vanishing gradients, resulting in
+    non-trainable network, and splitting the set solves that.     
 
 Write your answer using **markdown** and $\LaTeX$:
 ```python
@@ -189,6 +192,8 @@ An equation: $e^{i\pi} -1 = 0$
 part3_q2 = r"""
 **Your answer:**
 
+Because the generated text includes the history so after some iterations, the generated text will me longer the the
+ sequence length because of the history includes in it.
 
 Write your answer using **markdown** and $\LaTeX$:
 ```python
@@ -202,6 +207,8 @@ An equation: $e^{i\pi} -1 = 0$
 part3_q3 = r"""
 **Your answer:**
 
+Because in our problem the order of the text matters, and we rely on it in our predictions.
+ Shuffling the batches will result in non logical sentences and will harm the results.
 
 Write your answer using **markdown** and $\LaTeX$:
 ```python
@@ -215,6 +222,15 @@ An equation: $e^{i\pi} -1 = 0$
 part3_q4 = r"""
 **Your answer:**
 
+1. With a low temperature, we reduce the chance of low score character to be chosen.
+    We use lower temperatures here to allow the model to pick a character that is based on what the model has
+    already learnt.
+
+2. If the temperature is very high, also the low scored character will get decent probability to be chosen, resulting
+    in big variance in the prediction regardless of the scores.
+    
+3. Low temperature will cause in amplifying the probability of the higher scored characters to be chose, resulting in 
+    almost deterministic action, predicting the same character every time.
 
 Write your answer using **markdown** and $\LaTeX$:
 ```python
