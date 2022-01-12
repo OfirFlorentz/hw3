@@ -263,6 +263,7 @@ class MultilayerGRU(nn.Module):
         self.h_dim = h_dim
         self.n_layers = n_layers
         self.layer_params = []
+        self.dropout = dropout
 
         # TODO: Create the parameters of the model for all layers.
         #  To implement the affine transforms you can use either nn.Linear
@@ -280,7 +281,31 @@ class MultilayerGRU(nn.Module):
         #      then call self.register_parameter() on them. Also make
         #      sure to initialize them. See functions in torch.nn.init.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        kinds = {2: 'z', 5: 'r', 8: 'g'}
+        for i in range(n_layers):
+            temp_layers = []
+            if i == 0:
+                current_shape = self.in_dim
+            else:
+                current_shape = self.h_dim
+
+            for j in range(3):
+                temp_layers += [torch.nn.Linear(current_shape, self.h_dim, bias=False)]
+                temp_layers += [torch.nn.Linear(self.h_dim, self.h_dim, bias=False)]
+                temp_layers += [torch.nn.Parameter(torch.zeros((1, self.h_dim)))]
+
+            for index, x in enumerate(temp_layers):
+                if (index+1) % 3 == 0:
+                    torch.nn.init.normal_(x)
+                    self.register_parameter(f'l_{i}_{kinds[index]}', x)
+                else:
+                    self.add_module(f'l_{i}_W_{index}', x)
+
+            self.layer_params.append(temp_layers)
+
+        self.fout = [torch.nn.Linear(self.h_dim, self.out_dim)]
+        self.add_module('out', self.fout[0])
+
         # ========================
 
     def forward(self, input: Tensor, hidden_state: Tensor = None):
@@ -318,6 +343,22 @@ class MultilayerGRU(nn.Module):
         #  Tip: You can use torch.stack() to combine multiple tensors into a
         #  single tensor in a differentiable manner.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        layer_output = []
+        temp_layer = []
+        for i in range(seq_len):
+            in_layer = layer_input[:, i, :]
+            for j, params in enumerate(self.layer_params):
+                temp_layer = []
+                x, z, b, r, h, br, g, hg, bg = params
+                state = layer_states[-self.n_layers + j]
+                zt = torch.sigmoid(x(in_layer) + z(state) + b)
+                ht = zt * state + (1 - zt) * torch.tanh(g(in_layer) + hg(torch.sigmoid(r(in_layer) + h(state) + br) * state) + bg)
+                temp_layer.append(ht)
+                in_layer = torch.nn.functional.dropout(ht, p=self.dropout)
+            layer_states += temp_layer
+            f, = self.fout
+            layer_output.append(f(in_layer))
+        layer_output = torch.stack(layer_output, dim=1)
+        hidden_state = torch.stack(layer_states[-self.n_layers:], dim=1)
         # ========================
         return layer_output, hidden_state
