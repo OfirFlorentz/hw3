@@ -318,22 +318,22 @@ class RNNTrainer(Trainer):
     def __init__(self, model, loss_fn, optimizer, device=None):
         # ====== YOUR CODE: ======
         super().__init__(model, device)
+        self.current_hidden = None
         self.loss_fn = loss_fn
         self.optimizer = optimizer
-        self.current_hidden = None
         # ========================
 
     def train_epoch(self, dl_train: DataLoader, **kw):
         # TODO: Implement modifications to the base method, if needed.
         # ====== YOUR CODE: ======
-
+        self.current_hidden = None
         # ========================
         return super().train_epoch(dl_train, **kw)
 
     def test_epoch(self, dl_test: DataLoader, **kw):
         # TODO: Implement modifications to the base method, if needed.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        self.current_hidden = None
         # ========================
         return super().test_epoch(dl_test, **kw)
 
@@ -353,14 +353,17 @@ class RNNTrainer(Trainer):
         # ====== YOUR CODE: ======
         self.optimizer.zero_grad()
         scores, hidden = self.model(x, self.current_hidden)
+        hidden = hidden.to(self.device, dtype=torch.float)
+        scores = scores.to(self.device, dtype=torch.float)
+
         scores = torch.transpose(scores, 1, 2)
         loss = self.loss_fn(scores, y)
+        loss.backward()
         y_pred = torch.argmax(scores, dim=1)
-        num_correct = torch.sum(torch.eq(y, y_pred))
-        loss.backward(retain_graph=True)
-        self.optimizer.step()
+
         self.current_hidden = hidden.detach()
-        self.current_hidden.requires_grad = False
+        self.optimizer.step()
+        num_correct = torch.sum(torch.eq(y, y_pred))
         # ========================
 
         # Note: scaling num_correct by seq_len because each sample has seq_len
@@ -380,7 +383,12 @@ class RNNTrainer(Trainer):
             #  - Loss calculation
             #  - Calculate number of correct predictions
             # ====== YOUR CODE: ======
-            raise NotImplementedError()
+            scores, hidden = self.model(x, self.current_hidden)
+            scores = scores.to(self.device, dtype=torch.float)
+            scores = torch.transpose(scores, 1, 2)
+            y_pred = torch.argmax(scores, dim=1)
+            loss = self.loss_fn(scores, y)
+            num_correct = torch.sum(torch.eq(y_pred, y))
             # ========================
 
         return BatchResult(loss.item(), num_correct.item() / seq_len)

@@ -136,7 +136,7 @@ def chars_to_labelled_samples(text: str, char_to_idx: dict, seq_len: int, device
     # ====== YOUR CODE: ======
     embedding_dimension = len(char_to_idx)
 
-    all_embedded = chars_to_onehot(text, char_to_idx)
+    all_embedded = chars_to_onehot(text, char_to_idx).to(device)
     labels = all_embedded[1:]
     all_embedded = all_embedded[:-1]
 
@@ -205,7 +205,7 @@ def generate_from_model(model, start_sequence, n_chars, char_maps, T):
 
         for i in range(chars_to_generate):
             scores, current_state = model(x.unsqueeze(dim=0), current_state)
-            probability = hot_softmax(scores[0, -1:], dim=0, temperature=T)
+            probability = hot_softmax(scores[0, -1, :], dim=0, temperature=T)
             char_idx = torch.multinomial(probability, 1)
             char = idx_to_char[char_idx.item()]
             out_text += char
@@ -342,9 +342,7 @@ class MultilayerGRU(nn.Module):
         layer_states = []
         for i in range(self.n_layers):
             if hidden_state is None:
-                layer_states.append(
-                    torch.zeros(batch_size, self.h_dim, device=input.device)
-                )
+                layer_states.append(torch.zeros(batch_size, self.h_dim, device=input.device))
             else:
                 layer_states.append(hidden_state[:, i, :])
 
