@@ -163,11 +163,10 @@ def part3_rnn_hyperparams():
 
 
 def part3_generation_params():
-    start_seq = ""
-    temperature = 0.0001
+    start_seq = "Long time ago I woke from a deep sleep"
+    temperature = 0.4
     # TODO: Tweak the parameters to generate a literary masterpiece.
     # ====== YOUR CODE: ======
-    raise NotImplementedError()
     # ========================
     return start_seq, temperature
 
