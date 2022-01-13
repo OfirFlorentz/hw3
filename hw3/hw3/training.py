@@ -112,7 +112,8 @@ class Trainer(abc.ABC):
         as a relative path).
         :param checkpoint_filename: File name or relative path to save to.
         """
-        torch.save(self.model, checkpoint_filename)
+        # torch.save(self.model, checkpoint_filename)
+        torch.save({"model_state": self.model.state_dict()}, checkpoint_filename)
         print(f"\n*** Saved checkpoint {checkpoint_filename}")
 
     def train_epoch(self, dl_train: DataLoader, **kw) -> EpochResult:
