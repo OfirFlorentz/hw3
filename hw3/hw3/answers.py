@@ -8,29 +8,34 @@ math (delimited with $$).
 # ==============
 # Part 1 answers
 
+
 part1_q1 = r"""
-**Your answer:**
+1.a -
+We have batch_size * dim_in parameters that go in and  batch_size * dim_out parameters that go out.
+therefore the shape of the tensor is batch_size * dim_in * batch_size * dim_out. (1024 * 64 * 512 * 64).
 
+1. b - Yes. We have 64 different input, each input is i.i.d.
+therefore the derivative of the input parameter  0i to the output parameter 0j will be 0.  
+So only 1024*512*64 parameters will be non zero and the rest ( 1024*512*64 * 63) will be zero.
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+1.c - No. We know that ($\delta\mat{X}$) is equal to  $\delta\mat{Y}*\pderiv{Y}{\mat{X}}$ but in fact 
+$\pderiv{Y}{\mat{X}}$ = W that we already have. 
+
+2. a - The tensor shape will be the shape of W * shape of X. e.g 1024 * 64 * 512 * 1064.
+
+2. b - Yes, from the same reason in 1.b each example is i.i.d and therefore the i row in the input matrix row
+ will not influence the j row of the output
+
+2.c - Similar to 1.c We can calculate ($\delta\mat{W}$) is equal to  $\delta\mat{Y}*\pderiv{Y}{\mat{W}}= 
+dot(\delta\mat{Y}, X)$  
 
 """
-
 part1_q2 = r"""
-**Your answer:**
+It is theoretically possible to train neural net without back propagation. for ex we can make a a random search 
+in the weight space and try to look for a good result in the loss function. there several technique to do it.
+(https://towardsdatascience.com/the-fascinating-no-gradient-approach-to-neural-net-optimization-abb287f88c97)
 
-
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+But it seems that the GD method do achieve better result then any other method, especially in a complex problems. 
 
 """
 # ==============
