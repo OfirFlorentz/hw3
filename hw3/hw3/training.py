@@ -81,6 +81,7 @@ class Trainer(abc.ABC):
             #  - Use the train/test_epoch methods.
             #  - Save losses and accuracies in the lists above.
             # ====== YOUR CODE: ======
+            kw['verbose'] = verbose
             train_result: EpochResult = self.train_epoch(dl_train, **kw)
             train_loss.append(sum(train_result.losses) / len(train_result.losses))
             train_acc.append(train_result.accuracy)

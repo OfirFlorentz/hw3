@@ -47,7 +47,7 @@ def part2_overfit_hp():
 
 
 def part2_optim_hp():
-    wstd, lr_vanilla, lr_momentum, lr_rmsprop, reg, = 0.1, 0.015, 0.005, 0.0005, 0.004
+    wstd, lr_vanilla, lr_momentum, lr_rmsprop, reg, = 0.1, 0.015, 0.005, 0.001, 0.004
 
     # TODO: Tweak the hyperparameters to get the best results you can.
     # You may want to use different learning rates for each optimizer.
@@ -73,7 +73,6 @@ def part2_dropout_hp():
 
 
 part2_q1 = r"""
-**Your answer:**
 
 We can see that without dropout, we got nearly 100% accuracy on the training set, which implies on overfitting,
 while with dropout we got less accuracy on the training set and higher accuracy on the test set.
@@ -84,18 +83,9 @@ training compared to the 0.4 dropout set which implies on reducing the overfitti
 much higher accuracy on the test set, which might be because on the 0.8 we lose too much data and therefore reducing
 the tests set accuracy.
 
-
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
-
 """
 
 part2_q2 = r"""
-**Your answer:**
 
 Yes. As we can see from the graphs, from epochs 25-30 on the test set, we get increasing loss in the 0.4 dropout while
 on the same epoch we get increasing accuracy.
@@ -103,17 +93,9 @@ That can explained by the fact that in order for the accuracy to change it needs
 loss can also be affected by minor changes, causing the effect we just described. 
 
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
-
 """
 
 part2_q3 = r"""
-**Your answer:**
 
 1.
     Back propagation is a way of calculating gradients for the weights of the network,
@@ -130,14 +112,6 @@ part2_q3 = r"""
         the gradient according to that. In SGD the calculation time is much faster because we calculate the gradient on
          smaller amount of samples. 
     
-
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
-
 """
 # ==============
 
@@ -172,53 +146,29 @@ def part3_generation_params():
 
 
 part3_q1 = r"""
-**Your answer:**
 
 Splitting the corpus into sequences improves the training time significantly, training on the whole data set will
     take too long to train. Moreover training on the whole set can result in vanishing gradients, resulting in
     non-trainable network, and splitting the set solves that.     
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
-
 """
 
 part3_q2 = r"""
-**Your answer:**
 
 Because the generated text includes the history so after some iterations, the generated text will me longer the the
  sequence length because of the history includes in it.
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
-
 """
 
 part3_q3 = r"""
-**Your answer:**
 
 Because in our problem the order of the text matters, and we rely on it in our predictions.
  Shuffling the batches will result in non logical sentences and will harm the results.
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
 
 """
 
 part3_q4 = r"""
-**Your answer:**
 
 1. With a low temperature, we reduce the chance of low score character to be chosen.
     We use lower temperatures here to allow the model to pick a character that is based on what the model has
@@ -230,12 +180,6 @@ part3_q4 = r"""
 3. Low temperature will cause in amplifying the probability of the higher scored characters to be chose, resulting in 
     almost deterministic action, predicting the same character every time.
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
 
 """
 # ==============
