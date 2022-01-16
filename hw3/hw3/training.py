@@ -93,6 +93,8 @@ class Trainer(abc.ABC):
                 # ====== YOUR CODE: ======
                 best_acc = test_result.accuracy
                 epochs_without_improvement = 0
+                if checkpoints is not None:
+                    self.save_checkpoint(checkpoints)
                 # ========================
             else:
                 # ====== YOUR CODE: ======

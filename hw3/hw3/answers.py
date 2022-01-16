@@ -95,7 +95,8 @@ part2_q2 = r"""
 Yes. As we can see from the graphs, from epochs 25-30 on the test set, we get increasing loss in the 0.4 dropout while
 on the same epoch we get increasing accuracy.
 That can explained by the fact that in order for the accuracy to change it needs to cross certain threshold, while the
-loss can also be affected by minor changes, causing the effect we just described. 
+loss can also be affected by the scores of the true labels, e.g: if the correct label got score 0.8 or 0.9 it won't change
+our accuracy but will change the loss. 
 
 
 """
