@@ -167,7 +167,7 @@ Splitting the corpus into sequences improves the training time significantly, tr
 
 part3_q2 = r"""
 
-Because the generated text includes the history so after some iterations, the generated text will me longer the the
+Because the generated text includes the history so after some iterations, the generated text will be longer than the
  sequence length because of the history includes in it.
 
 """
