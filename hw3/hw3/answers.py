@@ -52,7 +52,7 @@ def part2_overfit_hp():
 
 
 def part2_optim_hp():
-    wstd, lr_vanilla, lr_momentum, lr_rmsprop, reg, = 0.1, 0.015, 0.005, 0.001, 0.004
+    wstd, lr_vanilla, lr_momentum, lr_rmsprop, reg, = 0.1, 0.015, 0.005, 0.0008, 0.004
 
     # TODO: Tweak the hyperparameters to get the best results you can.
     # You may want to use different learning rates for each optimizer.
@@ -117,6 +117,12 @@ part2_q3 = r"""
     B. Normal Gradient descent is slower because we first need to predict the entire training set and then calculate
         the gradient according to that. In SGD the calculation time is much faster because we calculate the gradient on
          smaller amount of samples. 
+4. A. No, In a regular GD we preform backprob every s step, so our prediction of the next batch will be already
+with the new weights, in contrast in the suggestion in the question the backward happen only once so the weights in every
+batch will be the same.
+B. After each forward step we had to keep in the memory the gradiant, therefore after several forward steps
+we will not have enough memory.
+    
     
 """
 # ==============
